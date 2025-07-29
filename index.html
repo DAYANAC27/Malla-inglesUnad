@@ -1,98 +1,111 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Malla Curricular LiLEI Interactiva</title>
-  <style>
-    body { font-family: sans-serif; margin: 20px; background-color: #f9f9f9; }
-    h1 { text-align: center; }
-    .semestre-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 20px;
-      margin-top: 20px;
-    }
-    .asignatura {
-      border-radius: 12px;
-      padding: 10px;
-      background-color: #e0e0e0;
-      cursor: pointer;
-      transition: transform 0.2s, background-color 0.3s;
-    }
-    .asignatura:hover {
-      transform: scale(1.02);
-    }
-    .completada {
-      background-color: #a5d6a7 !important;
-      text-decoration: line-through;
-    }
-    .disciplinar { background-color: #bbdefb; }
-    .investigativa { background-color: #ffe082; }
-    .social { background-color: #f8bbd0; }
-    .electiva { background-color: #d1c4e9; }
-    .tooltip {
-      display: none;
-      position: absolute;
-      background: white;
-      border: 1px solid #ccc;
-      padding: 10px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      z-index: 1000;
-    }
-  </style>
-</head>
-<body>
-  <h1>Malla Curricular – LiLEI</h1>
-  <div class="semestre-grid" id="malla"></div>
+import React, { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
-  <div class="tooltip" id="tooltip"></div>
+const asignaturas = [
+  // Semestre 1
+  { nombre: "Ética y Ciudadanía", semestre: 1, creditos: 3, componente: "social" },
+  { nombre: "Competencias Comunicativas", semestre: 1, creditos: 3, componente: "disciplinar" },
+  { nombre: "Lengua Materna", semestre: 1, creditos: 2, componente: "disciplinar" },
+  { nombre: "Herramientas Digitales para la Gestión del Conocimiento", semestre: 1, creditos: 3, componente: "disciplinar" },
+  { nombre: "Pensamiento Lógico y Matemático", semestre: 1, creditos: 3, componente: "disciplinar" },
 
-  <script>
-    const asignaturas = [
-      { nombre: "Ética y Ciudadanía", semestre: 1, creditos: 3, componente: "social" },
-      { nombre: "Competencias Comunicativas", semestre: 1, creditos: 3, componente: "disciplinar" },
-      { nombre: "Lengua Materna", semestre: 1, creditos: 2, componente: "disciplinar" },
-      { nombre: "Herramientas Digitales", semestre: 1, creditos: 3, componente: "disciplinar" },
-      { nombre: "Pensamiento Lógico y Matemático", semestre: 1, creditos: 3, componente: "disciplinar" },
-      { nombre: "Epistemología e Historia de la Pedagogía", semestre: 2, creditos: 4, componente: "investigativa" },
-      { nombre: "Introduction to Linguistics", semestre: 2, creditos: 2, componente: "disciplinar" },
-      { nombre: "Didactics of English", semestre: 3, creditos: 2, componente: "disciplinar" },
-      { nombre: "Foreign Language Acquisition", semestre: 3, creditos: 2, componente: "disciplinar" },
-      { nombre: "Evaluación", semestre: 4, creditos: 3, componente: "disciplinar" },
-      { nombre: "Methodology in FL Teaching", semestre: 4, creditos: 3, componente: "disciplinar" },
-      { nombre: "Teacher Development", semestre: 5, creditos: 3, componente: "investigativa" },
-      { nombre: "Pedagogical Practice", semestre: 6, creditos: 3, componente: "investigativa" },
-    ];
+  // Semestre 2
+  { nombre: "Epistemología e Historia de la Pedagogía", semestre: 2, creditos: 4, componente: "investigativa" },
+  { nombre: "Introduction to Linguistics", semestre: 2, creditos: 2, componente: "disciplinar" },
+  { nombre: "Fundamentos y Generalidades de la Investigación", semestre: 2, creditos: 3, componente: "investigativa" },
+  { nombre: "English I", semestre: 2, creditos: 3, componente: "disciplinar" },
 
-    const malla = document.getElementById('malla');
-    const tooltip = document.getElementById('tooltip');
+  // Semestre 3
+  { nombre: "Didactics of English", semestre: 3, creditos: 2, componente: "disciplinar" },
+  { nombre: "Foreign Language Acquisition and Learning", semestre: 3, creditos: 2, componente: "disciplinar" },
+  { nombre: "Teorías del Aprendizaje", semestre: 3, creditos: 3, componente: "investigativa" },
+  { nombre: "English II", semestre: 3, creditos: 3, componente: "disciplinar" },
 
-    asignaturas.forEach((asig, index) => {
-      const div = document.createElement('div');
-      div.className = `asignatura ${asig.componente}`;
-      div.textContent = asig.nombre;
-      div.title = `Créditos: ${asig.creditos}`;
-      div.dataset.index = index;
+  // Semestre 4
+  { nombre: "Evaluación", semestre: 4, creditos: 3, componente: "disciplinar" },
+  { nombre: "Methodology in Foreign Language Teaching", semestre: 4, creditos: 3, componente: "disciplinar" },
+  { nombre: "English III", semestre: 4, creditos: 3, componente: "disciplinar" },
+  { nombre: "English Phonetics", semestre: 4, creditos: 2, componente: "disciplinar" },
 
-      div.addEventListener('click', () => {
-        div.classList.toggle('completada');
-      });
+  // Semestre 5
+  { nombre: "Teacher Development", semestre: 5, creditos: 3, componente: "investigativa" },
+  { nombre: "Enfoques Curriculares", semestre: 5, creditos: 3, componente: "disciplinar" },
+  { nombre: "Teaching English to Children, Adolescents and Adults", semestre: 5, creditos: 3, componente: "disciplinar" },
+  { nombre: "English IV", semestre: 5, creditos: 3, componente: "disciplinar" },
 
-      div.addEventListener('mouseover', (e) => {
-        tooltip.style.display = 'block';
-        tooltip.innerHTML = `<strong>${asig.nombre}</strong><br>Créditos: ${asig.creditos}<br>Componente: ${asig.componente}`;
-        tooltip.style.top = `${e.clientY + 10}px`;
-        tooltip.style.left = `${e.clientX + 10}px`;
-      });
+  // Semestre 6
+  { nombre: "Materials Design", semestre: 6, creditos: 2, componente: "disciplinar" },
+  { nombre: "Testing and Evaluation in ELT", semestre: 6, creditos: 3, componente: "disciplinar" },
+  { nombre: "Integral Pedagogical Practice", semestre: 6, creditos: 3, componente: "investigativa" },
+  { nombre: "English V", semestre: 6, creditos: 3, componente: "disciplinar" },
 
-      div.addEventListener('mouseleave', () => {
-        tooltip.style.display = 'none';
-      });
+  // Semestre 7
+  { nombre: "Technology in Foreign Language Teaching", semestre: 7, creditos: 3, componente: "disciplinar" },
+  { nombre: "Pedagogical Practice in Online Environments", semestre: 7, creditos: 3, componente: "investigativa" },
+  { nombre: "Education for Social Transformation", semestre: 7, creditos: 3, componente: "social" },
+  { nombre: "English VI", semestre: 7, creditos: 3, componente: "disciplinar" },
 
-      malla.appendChild(div);
-    });
-  </script>
-</body>
-</html>
+  // Semestre 8
+  { nombre: "Educational Research", semestre: 8, creditos: 3, componente: "investigativa" },
+  { nombre: "Research Pedagogical Practice", semestre: 8, creditos: 3, componente: "investigativa" },
+  { nombre: "Electiva Específica Disciplinar I", semestre: 8, creditos: 2, componente: "electiva" },
+  { nombre: "English VII: Conversation", semestre: 8, creditos: 3, componente: "disciplinar" },
+
+  // Semestre 9
+  { nombre: "Educational Management", semestre: 9, creditos: 2, componente: "disciplinar" },
+  { nombre: "Research Project", semestre: 9, creditos: 2, componente: "investigativa" },
+  { nombre: "Electiva Específica Disciplinar II", semestre: 9, creditos: 2, componente: "electiva" },
+
+  // Semestre 10
+  { nombre: "Opción de Grado", semestre: 10, creditos: 3, componente: "investigativa" },
+];
+
+const colores = {
+  disciplinar: "bg-blue-200",
+  investigativa: "bg-yellow-200",
+  social: "bg-pink-200",
+  electiva: "bg-purple-200"
+};
+
+export default function MallaLiLEI() {
+  const [completadas, setCompletadas] = useState([]);
+
+  const toggleAsignatura = (nombre) => {
+    setCompletadas((prev) =>
+      prev.includes(nombre) ? prev.filter((n) => n !== nombre) : [...prev, nombre]
+    );
+  };
+
+  return (
+    <div className="p-4">
+      <h1 className="text-2xl font-bold text-center mb-4">Malla Curricular – LiLEI</h1>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {asignaturas.map((asig, idx) => (
+          <Card
+            key={idx}
+            className={`cursor-pointer transition-all ${
+              completadas.includes(asig.nombre) ? "line-through bg-green-200" : colores[asig.componente]
+            }`}
+            onClick={() => toggleAsignatura(asig.nombre)}
+          >
+            <CardContent className="p-4">
+              <h2 className="font-semibold text-lg">{asig.nombre}</h2>
+              <p className="text-sm">Créditos: {asig.creditos}</p>
+              <p className="text-sm capitalize">Componente: {asig.componente}</p>
+              <p className="text-sm">Semestre: {asig.semestre}</p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+      <div className="text-center mt-6">
+        <p className="text-md font-medium">
+          Créditos completados: {completadas.reduce((acc, nombre) => {
+            const found = asignaturas.find((a) => a.nombre === nombre);
+            return acc + (found ? found.creditos : 0);
+          }, 0)} / {asignaturas.reduce((acc, a) => acc + a.creditos, 0)}
+        </p>
+      </div>
+    </div>
+  );
+}
