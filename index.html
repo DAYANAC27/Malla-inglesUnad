@@ -1,111 +1,82 @@
-import React, { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+// === index.html ===
+// Guarda este archivo en la raíz del proyecto
 
-const asignaturas = [
-  // Semestre 1
-  { nombre: "Ética y Ciudadanía", semestre: 1, creditos: 3, componente: "social" },
-  { nombre: "Competencias Comunicativas", semestre: 1, creditos: 3, componente: "disciplinar" },
-  { nombre: "Lengua Materna", semestre: 1, creditos: 2, componente: "disciplinar" },
-  { nombre: "Herramientas Digitales para la Gestión del Conocimiento", semestre: 1, creditos: 3, componente: "disciplinar" },
-  { nombre: "Pensamiento Lógico y Matemático", semestre: 1, creditos: 3, componente: "disciplinar" },
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Malla LiLEI</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
 
-  // Semestre 2
-  { nombre: "Epistemología e Historia de la Pedagogía", semestre: 2, creditos: 4, componente: "investigativa" },
-  { nombre: "Introduction to Linguistics", semestre: 2, creditos: 2, componente: "disciplinar" },
-  { nombre: "Fundamentos y Generalidades de la Investigación", semestre: 2, creditos: 3, componente: "investigativa" },
-  { nombre: "English I", semestre: 2, creditos: 3, componente: "disciplinar" },
+// === tailwind.config.js ===
 
-  // Semestre 3
-  { nombre: "Didactics of English", semestre: 3, creditos: 2, componente: "disciplinar" },
-  { nombre: "Foreign Language Acquisition and Learning", semestre: 3, creditos: 2, componente: "disciplinar" },
-  { nombre: "Teorías del Aprendizaje", semestre: 3, creditos: 3, componente: "investigativa" },
-  { nombre: "English II", semestre: 3, creditos: 3, componente: "disciplinar" },
-
-  // Semestre 4
-  { nombre: "Evaluación", semestre: 4, creditos: 3, componente: "disciplinar" },
-  { nombre: "Methodology in Foreign Language Teaching", semestre: 4, creditos: 3, componente: "disciplinar" },
-  { nombre: "English III", semestre: 4, creditos: 3, componente: "disciplinar" },
-  { nombre: "English Phonetics", semestre: 4, creditos: 2, componente: "disciplinar" },
-
-  // Semestre 5
-  { nombre: "Teacher Development", semestre: 5, creditos: 3, componente: "investigativa" },
-  { nombre: "Enfoques Curriculares", semestre: 5, creditos: 3, componente: "disciplinar" },
-  { nombre: "Teaching English to Children, Adolescents and Adults", semestre: 5, creditos: 3, componente: "disciplinar" },
-  { nombre: "English IV", semestre: 5, creditos: 3, componente: "disciplinar" },
-
-  // Semestre 6
-  { nombre: "Materials Design", semestre: 6, creditos: 2, componente: "disciplinar" },
-  { nombre: "Testing and Evaluation in ELT", semestre: 6, creditos: 3, componente: "disciplinar" },
-  { nombre: "Integral Pedagogical Practice", semestre: 6, creditos: 3, componente: "investigativa" },
-  { nombre: "English V", semestre: 6, creditos: 3, componente: "disciplinar" },
-
-  // Semestre 7
-  { nombre: "Technology in Foreign Language Teaching", semestre: 7, creditos: 3, componente: "disciplinar" },
-  { nombre: "Pedagogical Practice in Online Environments", semestre: 7, creditos: 3, componente: "investigativa" },
-  { nombre: "Education for Social Transformation", semestre: 7, creditos: 3, componente: "social" },
-  { nombre: "English VI", semestre: 7, creditos: 3, componente: "disciplinar" },
-
-  // Semestre 8
-  { nombre: "Educational Research", semestre: 8, creditos: 3, componente: "investigativa" },
-  { nombre: "Research Pedagogical Practice", semestre: 8, creditos: 3, componente: "investigativa" },
-  { nombre: "Electiva Específica Disciplinar I", semestre: 8, creditos: 2, componente: "electiva" },
-  { nombre: "English VII: Conversation", semestre: 8, creditos: 3, componente: "disciplinar" },
-
-  // Semestre 9
-  { nombre: "Educational Management", semestre: 9, creditos: 2, componente: "disciplinar" },
-  { nombre: "Research Project", semestre: 9, creditos: 2, componente: "investigativa" },
-  { nombre: "Electiva Específica Disciplinar II", semestre: 9, creditos: 2, componente: "electiva" },
-
-  // Semestre 10
-  { nombre: "Opción de Grado", semestre: 10, creditos: 3, componente: "investigativa" },
-];
-
-const colores = {
-  disciplinar: "bg-blue-200",
-  investigativa: "bg-yellow-200",
-  social: "bg-pink-200",
-  electiva: "bg-purple-200"
+export default {
+  content: ["./index.html", "./src/**/*.{js,jsx}"],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
 };
 
-export default function MallaLiLEI() {
-  const [completadas, setCompletadas] = useState([]);
+// === postcss.config.js ===
 
-  const toggleAsignatura = (nombre) => {
-    setCompletadas((prev) =>
-      prev.includes(nombre) ? prev.filter((n) => n !== nombre) : [...prev, nombre]
-    );
-  };
+export default {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+};
 
-  return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold text-center mb-4">Malla Curricular – LiLEI</h1>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {asignaturas.map((asig, idx) => (
-          <Card
-            key={idx}
-            className={`cursor-pointer transition-all ${
-              completadas.includes(asig.nombre) ? "line-through bg-green-200" : colores[asig.componente]
-            }`}
-            onClick={() => toggleAsignatura(asig.nombre)}
-          >
-            <CardContent className="p-4">
-              <h2 className="font-semibold text-lg">{asig.nombre}</h2>
-              <p className="text-sm">Créditos: {asig.creditos}</p>
-              <p className="text-sm capitalize">Componente: {asig.componente}</p>
-              <p className="text-sm">Semestre: {asig.semestre}</p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-      <div className="text-center mt-6">
-        <p className="text-md font-medium">
-          Créditos completados: {completadas.reduce((acc, nombre) => {
-            const found = asignaturas.find((a) => a.nombre === nombre);
-            return acc + (found ? found.creditos : 0);
-          }, 0)} / {asignaturas.reduce((acc, a) => acc + a.creditos, 0)}
-        </p>
-      </div>
-    </div>
-  );
+// === index.css ===
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// === package.json ===
+
+{
+  "name": "malla-lilei",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.0",
+    "postcss": "^8.4.0",
+    "tailwindcss": "^3.3.0",
+    "vite": "^4.0.0"
+  }
 }
+
+// === src/main.jsx ===
+
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "../index.css";
+import MallaLiLEI from "./App.jsx";
+
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <React.StrictMode>
+    <MallaLiLEI />
+  </React.StrictMode>
+);
+
+// === src/App.jsx ===
+
+// COPIA TODO EL CÓDIGO QUE YA TIENES EN TU CANVAS AQUÍ, tal cual como ya está escrito:
+// Empieza en: import React, { useState } from "react";
+// y termina
